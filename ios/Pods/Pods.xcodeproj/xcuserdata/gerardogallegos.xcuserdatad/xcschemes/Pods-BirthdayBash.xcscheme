@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EDE1FD35CB80ED51A07C68C0AA2F280A"
-               BlueprintName = "Pods-pigeonchat"
+               BlueprintIdentifier = "E5ADA61BEABFBA96B41BC43D3E37EBCB"
+               BlueprintName = "Pods-BirthdayBash"
                ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libPods-pigeonchat.a">
+               BuildableName = "libPods-BirthdayBash.a">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

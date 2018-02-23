@@ -1,4 +1,4 @@
-package host.exp.exponent;
+package com.birthdaybash;
 
 import android.os.Bundle;
 
@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import host.exp.exponent.generated.DetachBuildConstants;
-import host.exp.exponent.experience.DetachActivity;
+import com.birthdaybash.generated.DetachBuildConstants;
+import com.birthdaybash.experience.DetachActivity;
 
 public class MainActivity extends DetachActivity {
 
   @Override
   public String publishedUrl() {
-    return "exp://exp.host/@ggallegos/pigeonchat";
+    return "exp://exp.host/@ggallegos/BirthdayBash";
   }
 
   @Override

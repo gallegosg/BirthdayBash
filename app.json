@@ -3,14 +3,15 @@
     "sdkVersion": "25.0.0",
     "ios": {
       "bundleIdentifier": "com.gerardogallegos.bdaychat",
-      "publishBundlePath": "ios/pigeonchat/Supporting/shell-app.bundle",
-      "publishManifestPath": "ios/pigeonchat/Supporting/shell-app-manifest.json"
+      "publishBundlePath": "ios/BirthdayBash/Supporting/shell-app.bundle",
+      "publishManifestPath": "ios/BirthdayBash/Supporting/shell-app-manifest.json"
     },
     "android": {
       "package": "com.gerardogallegos.bdaychat"
     },
-    "name": "pigeonchat",
-    "slug": "pigeonchat",
+    "name": "BirthdayBash",
+    "slug": "BirthdayBash",
+    "description": "Beta - Chat with people who share your same birthday!",
     "version": "0.1.0",
     "isDetached": true,
     "detach": {

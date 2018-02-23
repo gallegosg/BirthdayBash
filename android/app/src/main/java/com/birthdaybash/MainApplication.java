@@ -1,4 +1,4 @@
-package host.exp.exponent;
+package com.birthdaybash;
 
 
 import com.facebook.react.ReactPackage;

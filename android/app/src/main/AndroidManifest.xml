@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
-  package="host.exp.exponent"
+  package="com.birthdaybash"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools">
 
@@ -173,7 +173,7 @@
 
     <!-- Analytics -->
     <receiver
-      android:name="host.exp.exponent.referrer.InstallReferrerReceiver"
+      android:name="com.birthdaybash.referrer.InstallReferrerReceiver"
       android:exported="true">
       <intent-filter>
         <action android:name="com.android.vending.INSTALL_REFERRER" />

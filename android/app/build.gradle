@@ -31,7 +31,7 @@ android {
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     // Deprecated. Used by net.openid:appauth
     manifestPlaceholders = [
-      'appAuthRedirectScheme': 'host.exp.exponent'
+      'appAuthRedirectScheme': 'com.birthdaybash'
     ]
   }
   dexOptions {
@@ -165,7 +165,7 @@ dependencies {
 
 
   
-  compile('host.exp.exponent:expoview:25.0.0@aar') {
+  compile('com.birthdaybash:expoview:25.0.0@aar') {
     transitive = true
   }
   
