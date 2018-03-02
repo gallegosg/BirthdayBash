@@ -8,9 +8,10 @@ import {
 import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat';
 const firebase = require("firebase");
 import md5 from '../lib/md5'
-
+import {Avatar} from 'react-native-elements'
 import TextField from '../Components/TextField';
 import Separator from '../Components/Separator';
+import {ProfileModal} from '../Components/ProfileModal'
 
 export default class Chat extends Component {
 
@@ -22,9 +23,10 @@ export default class Chat extends Component {
 
         navigation = this.props.navigation
 
-        this.user = firebase.auth().currentUser
+        this.user = firebase.auth().currentUser;
         const { params } = navigation.state;
         const bday = params ? params.bday : null
+        const name = params ? params.firstName : null;
 
         this.chatRef = this.getRef().child('Chat/' + bday);
         this.chatRefData = this.chatRef.orderByChild('order')
@@ -41,12 +43,18 @@ export default class Chat extends Component {
             color: 'lightblue', 
         },
         headerStyle: {
+            paddingLeft: 10,
+            paddingRight: 10,
             backgroundColor: '#222'
         },
         headerTintStyle: {
             color: 'lightblue'
         },
-        headerLeft: null,
+        headerLeft: (
+            <ProfileModal 
+                //source={'https://api.adorable.io/avatars/100/' + navigation.state.params.name + '.png'}/>
+                name={navigation.state.params.name} />
+        ),
         headerRight: (
             <Button
                 onPress={() => {
@@ -78,15 +86,13 @@ export default class Chat extends Component {
             // get children as an array
             var items = [];
             snap.forEach((child) => {
-                var avatar = 'https://www.gravatar.com/avatar/' + (md5(this.user.email))
-                var name = this.user.name
                 items.push({
                     _id: child.val().createdAt,
                     text: child.val().text,
                     createdAt: new Date(child.val().createdAt),
                     user: {
                         _id: child.val().uid,
-                        avatar: avatar
+                        avatar: child.val().avatar
                     }
                 });
             });
@@ -111,15 +117,14 @@ export default class Chat extends Component {
 
     onSend(messages = []) {
 
-        // this.setState({
-        //     messages: GiftedChat.append(this.state.messages, messages),
-        // });
         messages.forEach(message => {
             var now = new Date().getTime()
+            var name = navigation.state.params.firstName;
             this.chatRef.push({
                 _id: now,
                 text: message.text,
                 createdAt: now,
+                avatar: 'https://api.adorable.io/avatars/40/' + name + '.png',
                 uid: this.user.uid,
                 order: -1 * now
             })

@@ -31,7 +31,7 @@ export default class Login extends Component {
             console.log('on auth state changed')
             if (user) {
                 firebase.database().ref().child('AllUsers').child(user.uid).once('value')
-                    .then((snap) => this.goToChat(snap.val().birthday)) 
+                    .then((snap) => this.goToChat(snap.val().birthday, snap.val().name)) 
             }
     });
 
@@ -44,13 +44,13 @@ export default class Login extends Component {
     };
 
     //send user to chat after sign in 
-    goToChat = (day) => {
+    goToChat = (day, name) => {
         if(this.refs.mainView){
         this.setState({
             loading: false
         })
     }
-        navigation.navigate('Chat', {bday: day})
+        navigation.navigate('Chat', {bday: day, firstName: name})
     }
 
     login = () => {
