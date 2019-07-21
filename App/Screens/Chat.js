@@ -2,16 +2,13 @@ import React, { Component } from 'react';
 import {
   View,
   StyleSheet,
-  Text,
-  TouchableOpacity
+  Text
 } from 'react-native';
 import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat';
 import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
-import ProfileModal from '../Components/ProfileModal';
 import {Overlay, Avatar} from 'react-native-elements'
-import {getBottomSpace, ifIphoneX, isIphoneX} from 'react-native-iphone-x-helper';
-/* eslint no-underscore-dangle: "error" */
+import {ifIphoneX, isIphoneX} from 'react-native-iphone-x-helper';
 
 class Chat extends Component {
   static navigationOptions = ({navigation}) => {
@@ -26,14 +23,15 @@ class Chat extends Component {
       headerStyle: {
         backgroundColor: '#222',
       },
-      headerRight: (<Avatar
-            small
-            rounded
-            containerStyle={{marginRight: 10}}
-            source={{uri: params.avatar}}
-            />),
+      // headerRight: (
+      //   <Avatar
+      //     small
+      //     rounded
+      //     containerStyle={{marginRight: 10}}
+      //     source={{uri: params.avatar}}
+      //   />
+      // ),
     }
-   
   };
 
   constructor(props) {
@@ -59,7 +57,6 @@ class Chat extends Component {
   }
 
   componentWillMount() {
-    console.log(this.props)
     const {setParams} = this.props.navigation;
     setParams({date: this.props.bday, avatar: this.props.avatar})
 
@@ -192,7 +189,7 @@ class Chat extends Component {
           {/* <View style={styles.profileContainer}>
             <View style={styles.profileOverlay} />
           </View> */}
-          <Overlay
+          {/* <Overlay
             isVisible={this.state.isVisible}
             windowBackgroundColor="rgba(0, 0, 0, .7)"
             overlayBackgroundColor="transparent"
@@ -210,7 +207,7 @@ class Chat extends Component {
                   />
                 <Text style={styles.profileText}>{this.state.pressedUser.name}</Text>
               </View>
-            </Overlay>
+            </Overlay> */}
         </View>
       );
     }
