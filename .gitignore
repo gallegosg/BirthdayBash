@@ -62,3 +62,4 @@ buck-out/
 ios/BirthdayBash.xcodeproj/GoogleService-Info.json
 android/app/google-services.json
 android/app/google-services-release.json
+android/app/google-services-dev.json

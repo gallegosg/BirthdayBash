@@ -22,7 +22,7 @@ export default class DatePick extends Component {
         placeholder="Birthday"
         format="MM-DD-YYYY"
         minDate="05-01-1900"
-        maxDate="06-01-2018"
+        maxDate={new Date()}
         confirmBtnText="Confirm"
         cancelBtnText="Cancel"
         showIcon={false}

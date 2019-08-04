@@ -110,7 +110,7 @@ class Login extends Component {
     login = () => {
         if(!this.state.birthday){
             return this.setState({
-                errorMessage: 'missing birthday'
+                errorMessage: 'Missing Birthday'
             })
         }
         if(this.refs.mainView){
@@ -160,7 +160,6 @@ class Login extends Component {
     }
 
     fsSuccess = (val) => {
-        console.log("Document successfully written!");
         this.props.saveUser(val)
         navigation.navigate('App')
         this.setState({
@@ -186,6 +185,7 @@ class Login extends Component {
                     <TextInput 
                         placeholder="Name"
                         value={this.state.name}
+                        maxLength={15}
                         placeholderTextColor="grey"
                         onChangeText={name => this.setState({ name }) }
                         style={styles.textField} />
