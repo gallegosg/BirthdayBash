@@ -8,6 +8,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "moment": "^2.24.0",
     "react": "16.8.6",
     "react-native": "0.60.4",
     "react-native-datepicker": "^1.7.2",

@@ -3,14 +3,11 @@ import {
     View,
     StyleSheet,
     Image,
-    Button,
     TouchableOpacity,
-    TextInput,
-    TouchableWithoutFeedback,
-    Keyboard,
-    Platform
+    ActivityIndicator,
+    Platform,
+    Keyboard
 } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import firebase from 'react-native-firebase'
 import { connect } from 'react-redux';
 import { Text} from 'react-native-elements';
@@ -19,16 +16,20 @@ import candles from '../images/candles2.png'
 import {saveUser} from '../actions/userActions'
 import {Colors} from '../Shared'
 import DatePick from '../Components/DatePick';
+import { TextInput } from 'react-native-gesture-handler';
+import PopinButton from '../Components/PopinButton';
 
 class Login extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
             email: 'One@test.com',
             password: 'password1',
             birthday: '',
-            errorMessage: null
+            errorMessage: null,
+            loading: false,
+            name: '',
+            keyboardUp: false
         }
 
     navigation = this.props.navigation;
@@ -43,15 +44,36 @@ class Login extends Component {
     };
 
     componentDidMount = () => {
-        // console.log(this.props.navigation)
+        this.keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            this._keyboardDidShow,
+        );
+        this.keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            this._keyboardDidHide,
+        );
     }
+
+    componentWillUnmount = () => {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+    }
+    
+    _keyboardDidShow = () => {
+        this.setState({keyboardUp: true})
+    }
+    
+    _keyboardDidHide = () => {
+        this.setState({keyboardUp: false})
+    }
+
     //send user to chat after sign in 
     goToChat = () => {
         if(this.refs.mainView){
-        this.setState({
-            loading: false
-        })
-    }
+            this.setState({
+                loading: false
+            })
+        }
         navigation.navigate('Chat')
     }
 
@@ -63,11 +85,10 @@ class Login extends Component {
         firebase.firestore().collection('users').doc(uid).get()
             .then((doc) => {
                 if (doc.exists) {
-                    console.log(doc.data())
                     this.getUserDataSuccess(doc.data())
                 } else {
                     // doc.data() will be undefined in this case
-                    console.log("No such document!");
+                    firebase.auth().signOut();
                 }
             }).catch((error) => {
                 this.setState({
@@ -102,14 +123,12 @@ class Login extends Component {
         firebase.auth()
             .signInAnonymously()
             .then((res) => {
-                console.log(res)
                 const {uid} = res.user._user
                 //create user here
                 this.saveToFS(uid)
             })
             .catch((error) => {
                 // Handle Errors here.
-                console.log(error)
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 this.setState({
@@ -120,11 +139,11 @@ class Login extends Component {
     }
 
     saveToFS = (uid) => {
-        console.log(uid)
         let user = {
             uid,
+            name: this.state.name,
             birthday: this.state.birthday,
-            avatar: 'https://api.adorable.io/avatars/150/' + uid + '.png',
+            avatar: 'https://api.adorable.io/avatars/50/' + uid + '.png',
             platform: Platform.OS
         }
         firebase.firestore().collection('users').doc(uid).set(user)
@@ -155,31 +174,44 @@ class Login extends Component {
     }
 
     render() {
+        const { loading, keyboardUp } = this.state;
         return (
             <View ref="mainView" style={styles.container}>
-                <View style={{alignItems: 'center', flex: 0.5, justifyContent: 'center'}}>
+                <View style={{alignItems: 'center', flex: 0.5, justifyContent: 'center', marginBottom: 25}}>
                     <Image source={hat} style={{width: 80, height: 80, resizeMode: 'contain'}}/>
                     <Text h1 style={{color: Colors.secondaryColor, fontWeight: 'bold'}}>Birthday</Text>
                     <Text h1 style={{color: Colors.secondaryColor, fontWeight: 'bold'}}>Bash</Text>
                 </View>
-                <View>
-                <DatePick 
-                    onDateChange={(birthday) => this.setState({birthday})} />
+                <View style={{flex: 0.2, width: '100%', alignItems: 'center'}}>
+                    <TextInput 
+                        placeholder="Name"
+                        value={this.state.name}
+                        placeholderTextColor="grey"
+                        onChangeText={name => this.setState({ name }) }
+                        style={styles.textField} />
+                    <View style={styles.divider} />
+                    <DatePick 
+                        onDateChange={(birthday) => this.setState({birthday})} />
                 </View>
 
-                <View style={{flex: 0.3, alignItems: 'center'}}> 
-                    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 20}}>
-                        <TouchableOpacity
+                <View style={{flex: 0.2, alignItems: 'center'}}> 
+                    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                        <PopinButton
                             style={[styles.button, {backgroundColor: this.mainOrange, width: 250}]}
                             onPress={this.login}
+                            disabled={loading}
                             >
+                            {loading ? 
+                            <ActivityIndicator size="large" color="#fff" />
+                            :
                             <Text style={[styles.buttonText, {color: 'white'}]}>Enter</Text>
-                        </TouchableOpacity>
+                            }
+                        </PopinButton>
                             
                         {this.renderErrorMessage()}
                     </View>
                 </View>
-                <Image source={candles} style={{flex: 0.22, alignItems: 'flex-end', resizeMode: 'contain'}}/>
+                {keyboardUp || <Image source={candles} style={{flex: 0.22, alignItems: 'flex-end', resizeMode: 'contain'}}/>}
             </View>
         );
     }
@@ -202,7 +234,7 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     button: {
-        height: '30%',
+        height: '50%',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
@@ -215,9 +247,17 @@ const styles = StyleSheet.create({
     },
     textField: {
         width: 300,
-        fontSize: 18,
-        height: 35,
+        fontSize: 22,
+        height: 40,
+        paddingVertical: 2,
         width: 300,
-        color: 'white'
-        }
+        color: 'white',
+        textAlign: 'center'
+    },
+    divider: {
+        height: 10,
+        width: '50%',
+        borderTopWidth: 1,
+        borderTopColor: '#ccc',
+    }
 })

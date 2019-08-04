@@ -34,25 +34,25 @@ class PreLogin extends Component {
   }
 
   /**
-     * use user id to get their data from the
-     * database
-     */
-    getUserData = (uid) => {
-      firebase.firestore().collection('users').doc(uid).get()
-        .then((doc) => {
-            if (doc.exists) {
-              this.getUserDataSuccess(doc.data())
-            } else {
-              // doc.data() will be undefined in this case
-              console.log("No such document!");
-              firebase.auth().signOut();
-            }
-        }).catch((error) => {
-          console.log(error)
-          this.setState({
-            errorMessage: error.message,
-          })
+   * use user id to get their data from the
+   * database
+   */
+  getUserData = (uid) => {
+    firebase.firestore().collection('users').doc(uid).get()
+      .then((doc) => {
+        if (doc.exists) {
+          this.getUserDataSuccess(doc.data())
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+          firebase.auth().signOut();
+        }
+      }).catch((error) => {
+        console.log(error)
+        this.setState({
+          errorMessage: error.message,
         })
+      })
   }
 
   /**
@@ -72,8 +72,8 @@ class PreLogin extends Component {
 
   render() {
     return (
-      <View styles={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <ActivityIndicator />
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%', backgroundColor: '#333'}}>
+        <ActivityIndicator color="white" size="large" />
         {this.renderErrorMessage()}
         <StatusBar barStyle="default" />
       </View>

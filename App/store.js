@@ -9,7 +9,7 @@ const logger = createLogger({
     //empty options
 });
 
-const middleware = [thunk, logger];
+const middleware = [thunk];
 
 const store = createStore(
     rootReducer, 

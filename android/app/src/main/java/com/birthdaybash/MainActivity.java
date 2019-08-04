@@ -1,4 +1,4 @@
-package com.birthdaybash;
+package com.gerardogallegos.birthdaybash;
 
 import com.facebook.react.ReactActivity;
 

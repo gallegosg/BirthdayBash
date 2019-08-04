@@ -19,7 +19,7 @@ export default class DatePick extends Component {
         style={{width: 300}}
         date={this.state.date}
         mode="date"
-        placeholder="Select your birthday"
+        placeholder="Birthday"
         format="MM-DD-YYYY"
         minDate="05-01-1900"
         maxDate="06-01-2018"
