@@ -7,7 +7,7 @@ import {
 import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat';
 import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
-import {Overlay, Avatar} from 'react-native-elements'
+import moment from 'moment' 
 import {ifIphoneX, isIphoneX} from 'react-native-iphone-x-helper';
 
 class Chat extends Component {
@@ -16,7 +16,7 @@ class Chat extends Component {
     return{
       gesturesEnabled: false,
       headerTitle: params.date,
-      backgroundColor: '#000',
+      backgroundColor: '#111',
       headerTitleStyle: {
         color: 'white',
       },
@@ -56,14 +56,20 @@ class Chat extends Component {
     this.onSend = this.onSend.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount = () => {
     const {setParams} = this.props.navigation;
-    setParams({date: this.props.bday, avatar: this.props.avatar})
+    const { bday, avatar } = this.props
+    //get month name and day from date code
+    const monthInt = bday.substring(0, 2).replace(/^0+/i, '') - 1;
+    const day = bday.substring(3, bday.length).replace(/^0+/i, '');
+    const month = moment().month(monthInt).format("MMMM")
+    const date = month + ' ' + day
+    setParams({date, avatar})
 
     this.listenForItems(this.chatRef);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     const unsubscribe = this.chatRef
       .onSnapshot(() => {});
     // ...
@@ -71,7 +77,7 @@ class Chat extends Component {
     unsubscribe();
   }
 
-  onSend(messages = []) {
+  onSend = (messages = []) => {
     messages.forEach((message) => {
       this.chatRef.doc(message._id).set({
         _id: message._id,
@@ -79,6 +85,7 @@ class Chat extends Component {
         createdAt: message.createdAt,
         avatar: this.props.avatar,
         uid: this.props.uid,
+        name: this.props.name
       })
         .then(() => {
           console.log('saved to chat');
@@ -90,7 +97,7 @@ class Chat extends Component {
 
   getRef = () => firebase.database().ref();
 
-  listenForItems(chatRef) {
+  listenForItems = (chatRef) => {
     chatRef.orderBy('createdAt', 'desc').limit(50)
       .onSnapshot((querySnapshot) => {
         const items = [];
@@ -114,9 +121,15 @@ class Chat extends Component {
       });
   }
 
-  renderBubble(props, color) {
+  renderBubble = (props, color) => {
+    console.log(props)
+    const isUser = props.currentMessage.user._id == this.props.uid;
+    const hasName = props.currentMessage.user.name ? true : false;
+    const hasNext = props.nextMessage.user !== undefined
+    const isNextDifferent = hasNext && props.currentMessage.user._id !== props.nextMessage.user._id
     return ( 
-      <Bubble
+      <View>
+        <Bubble
         {...props} 
         wrapperStyle={{
           left: {
@@ -127,6 +140,8 @@ class Chat extends Component {
           }
         }} 
       />
+      {!isUser && hasName && (isNextDifferent || !hasNext) && <Text style={styles.bubbleNametext}>{props.currentMessage.user.name}</Text>}
+      </View>
   )}
 
     renderSend(props) {
@@ -151,16 +166,14 @@ class Chat extends Component {
 
     logout = () => {
       firebase.auth().signOut().then(() => {
-          this.props.removeUser()
-
-          this.props.navigation.dispatch({type: 'Navigation/RESET', 
-              index: 0, 
-              key: null,
-              actions: [
-                  NavigationOptions.navigate({routeName: 'Auth'})
-              ]
-          }).catch;
-
+        this.props.removeUser()
+        this.props.navigation.dispatch({type: 'Navigation/RESET', 
+          index: 0, 
+          key: null,
+          actions: [
+            NavigationOptions.navigate({routeName: 'Auth'})
+          ]
+        }).catch;
       }).catch((error) => {
           // An error happened.
           console.log(error)
@@ -227,18 +240,21 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {})(Chat);
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#333',
-    },
-    profileContainer: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 15,
-    },
-    profileText: {
-      color: 'white',
-      fontSize: 30,
-    }
+  container: {
+    flex: 1,
+    backgroundColor: '#333',
+  },
+  profileContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 15,
+  },
+  profileText: {
+    color: 'white',
+    fontSize: 30,
+  },
+  bubbleNametext: {
+    color: '#fff'
+  }
 })

@@ -3,7 +3,8 @@ export function saveUser(snap) {
         type: 'SAVE_USER',
         bday: snap.birthday,
         uid: snap.uid,
-        avatar: snap.avatar
+        avatar: snap.avatar,
+        name: snap.name
     })
   }
 
